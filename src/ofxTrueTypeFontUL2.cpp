@@ -90,150 +90,150 @@ typedef enum {
 #endif
 
 namespace ul2_ttf_utils{
-
+    
 #ifdef TARGET_WIN32
 	typedef basic_string<uint32_t> ustring;
 #else
 	typedef wstring ustring;
 #endif
-
-template <class T>
-wstring convToUCS4(basic_string<T> src) {
-	wstring dst = L"";
-	// convert UTF-8 on char or wchar_t to UCS-4 on wchar_t
-	int size = src.size();
-	int index = 0;
-	while (index < size) {
-		wchar_t c = (unsigned char)src[index];
-		if (c < 0x80) {
-			dst += (c);
-		}else if (c < 0xe0) {
-			if (index + 1 < size) {
-				dst += (((c & 0x1f) << 6) | (src[index+1] & 0x3f));
-				index++;
-			}
-		}else if (c < 0xf0) {
-			if (index + 2 < size) {
-				dst += (((c & 0x0f) << 12) | ((src[index+1] & 0x3f) << 6) |
-					(src[index+2] & 0x3f));
-				index += 2;
-			}
-		}else if (c < 0xf8) {
-			if (index + 3 < size) {
-				dst += (((c & 0x07) << 18) | ((src[index+1] & 0x3f) << 12) |
-					((src[index+2] & 0x3f) << 6) | (src[index+3] & 0x3f));
-				index += 3;
-			}
-		}else if (c < 0xfc) {
-			if (index + 4 < size) {
-				dst += (((c & 0x03) << 24) | ((src[index+1] & 0x3f) << 18) |
-					((src[index+2] & 0x3f) << 12) | ((src[index+3] & 0x3f) << 6) |
-					(src[index+4] & 0x3f));
-				index += 4;
-			}
-		}else if (c < 0xfe) {
-			if (index + 5 < size) {
-				dst += (((c & 0x01) << 30) | ((src[index+1] & 0x3f) << 24) |
-					((src[index+2] & 0x3f) << 18) | ((src[index+3] & 0x3f) << 12) |
-					((src[index+4] & 0x3f) << 6) | (src[index+5] & 0x3f));
-				index += 5;
-			}
-		}
-		index++;
-	}
-	return dst;
-}
-
+    
+    template <class T>
+    wstring convToUCS4(basic_string<T> src) {
+        wstring dst = L"";
+        // convert UTF-8 on char or wchar_t to UCS-4 on wchar_t
+        int size = src.size();
+        int index = 0;
+        while (index < size) {
+            wchar_t c = (unsigned char)src[index];
+            if (c < 0x80) {
+                dst += (c);
+            }else if (c < 0xe0) {
+                if (index + 1 < size) {
+                    dst += (((c & 0x1f) << 6) | (src[index+1] & 0x3f));
+                    index++;
+                }
+            }else if (c < 0xf0) {
+                if (index + 2 < size) {
+                    dst += (((c & 0x0f) << 12) | ((src[index+1] & 0x3f) << 6) |
+                            (src[index+2] & 0x3f));
+                    index += 2;
+                }
+            }else if (c < 0xf8) {
+                if (index + 3 < size) {
+                    dst += (((c & 0x07) << 18) | ((src[index+1] & 0x3f) << 12) |
+                            ((src[index+2] & 0x3f) << 6) | (src[index+3] & 0x3f));
+                    index += 3;
+                }
+            }else if (c < 0xfc) {
+                if (index + 4 < size) {
+                    dst += (((c & 0x03) << 24) | ((src[index+1] & 0x3f) << 18) |
+                            ((src[index+2] & 0x3f) << 12) | ((src[index+3] & 0x3f) << 6) |
+                            (src[index+4] & 0x3f));
+                    index += 4;
+                }
+            }else if (c < 0xfe) {
+                if (index + 5 < size) {
+                    dst += (((c & 0x01) << 30) | ((src[index+1] & 0x3f) << 24) |
+                            ((src[index+2] & 0x3f) << 18) | ((src[index+3] & 0x3f) << 12) |
+                            ((src[index+4] & 0x3f) << 6) | (src[index+5] & 0x3f));
+                    index += 5;
+                }
+            }
+            index++;
+        }
+        return dst;
+    }
+    
 #ifdef TARGET_WIN32
-ustring convUTF16ToUCS4(wstring src) {
-	// decord surrogate pairs
-	ustring dst;
-	for (std::wstring::iterator iter=src.begin(); iter!=src.end(); ++iter) {
-		if (0xD800 <=*iter && *iter<=0xDFFF) {
-			if (0xD800<=*iter && *iter<=0xDBFF && 0xDC00<=*(iter+1) && *(iter+1)<=0xDFFF) {
-				int hi = *iter & 0x3FF;
-				int lo = *(iter+1) & 0x3FF;
-				int code = (hi << 10) | lo;
-				dst += code + 0x10000;
-				++iter;
-			}else {
-				// ofLog(OF_LOG_ERROR, "util::ofxTrueTypeFontUC::convUTF16ToUCS4 - wrong input" );
-			}
-		}else dst += *iter;
-	}
-	return dst;
-}
+    ustring convUTF16ToUCS4(wstring src) {
+        // decord surrogate pairs
+        ustring dst;
+        for (std::wstring::iterator iter=src.begin(); iter!=src.end(); ++iter) {
+            if (0xD800 <=*iter && *iter<=0xDFFF) {
+                if (0xD800<=*iter && *iter<=0xDBFF && 0xDC00<=*(iter+1) && *(iter+1)<=0xDFFF) {
+                    int hi = *iter & 0x3FF;
+                    int lo = *(iter+1) & 0x3FF;
+                    int code = (hi << 10) | lo;
+                    dst += code + 0x10000;
+                    ++iter;
+                }else {
+                    // ofLog(OF_LOG_ERROR, "util::ofxTrueTypeFontUC::convUTF16ToUCS4 - wrong input" );
+                }
+            }else dst += *iter;
+        }
+        return dst;
+    }
 #endif
-wstring convToWString(string src) {
-  
+    wstring convToWString(string src) {
+        
 #ifdef TARGET_WIN32
-	wstring dst = L"";
-	typedef codecvt<wchar_t, char, mbstate_t> codecvt_t;
-  
-	locale loc = locale("");
-	if(!std::has_facet<codecvt_t>(loc))
-		return dst;
-  
-	const codecvt_t & conv = use_facet<codecvt_t>(loc);
-  
-	const std::size_t size = src.length();
-	std::vector<wchar_t> dst_vctr(size);
-  
-	if (dst_vctr.size() == 0)
-	return dst;
-  
-	wchar_t * const buf = &dst_vctr[0];
-  
-	const char * dummy;
-	wchar_t * next;
-	mbstate_t state = {0};
-	const char * const s = src.c_str();
-  
-	if (conv.in(state, s, s + size, dummy, buf, buf + size, next) == codecvt_t::ok)
-		dst = std::wstring(buf, next - buf);
-  
-	return dst;
+        wstring dst = L"";
+        typedef codecvt<wchar_t, char, mbstate_t> codecvt_t;
+        
+        locale loc = locale("");
+        if(!std::has_facet<codecvt_t>(loc))
+            return dst;
+        
+        const codecvt_t & conv = use_facet<codecvt_t>(loc);
+        
+        const std::size_t size = src.length();
+        std::vector<wchar_t> dst_vctr(size);
+        
+        if (dst_vctr.size() == 0)
+            return dst;
+        
+        wchar_t * const buf = &dst_vctr[0];
+        
+        const char * dummy;
+        wchar_t * next;
+        mbstate_t state = {0};
+        const char * const s = src.c_str();
+        
+        if (conv.in(state, s, s + size, dummy, buf, buf + size, next) == codecvt_t::ok)
+            dst = std::wstring(buf, next - buf);
+        
+        return dst;
 #elif defined __clang__
-	wstring dst = L"";
-	for (int i=0; i<src.size(); ++i)
-		dst += src[i];
+        wstring dst = L"";
+        for (int i=0; i<src.size(); ++i)
+            dst += src[i];
 #if defined(__clang_major__) && (__clang_major__ >= 4)
-	dst = convToUCS4<wchar_t>(dst);
+        dst = convToUCS4<wchar_t>(dst);
 #endif
-	return dst;
+        return dst;
 #else
-	return convToUCS4<char>(src);
+        return convToUCS4<char>(src);
 #endif
-}
-
-ustring convertTTFwstring(wstring s){
+    }
+    
+    ustring convertTTFwstring(wstring s){
 #ifdef TARGET_WIN32
-	return convUTF16ToUCS4(s);
+        return convUTF16ToUCS4(s);
 #elif defined(__clang_major__) && (__clang_major__ <= 3)
-	return convToUCS4<wchar_t>(s);
+        return convToUCS4<wchar_t>(s);
 #else
-	return s;
+        return s;
 #endif
-}
-
-bool isCJK(int unicode){ 
-    return ( 
-		 (unicode>=0x4e00  && unicode<=0x9fcf)  || // CJK統合漢字
-         (unicode>=0x3400  && unicode<=0x4dbf)  || // CJK統合漢字拡張A
-         (unicode>=0x20000 && unicode<=0x2a6df) || // CJK統合漢字拡張B
-         (unicode>=0xf900  && unicode<=0xfadf)  || // CJK互換漢字
-         (unicode>=0x2f800 && unicode<=0x2fa1f) || // CJK互換漢字補助
-		 (unicode>=0x3190 && unicode<=0x319f)   || // 漢文用の記号
-		 (unicode>=0x3040 && unicode<=0x309f)   || // ひらがな
-		 (unicode>=0x30a0 && unicode<=0x30ff)   || // カタカナ
-  		 (unicode>=0xff61 && unicode<=0xff9f )     // 半角カタカナ
-	) ;
-}
-
-static const ustring &SetNotEOL    = convertTTFwstring(NOT_END_OF_LINE_CHARS);
-static const ustring &SetNotSOL    = convertTTFwstring(NOT_START_OF_LINE_CHARS);
-static const ustring &SetBreakable = convertTTFwstring(BREAKABLE_CHARS);
-
+    }
+    
+    bool isCJK(int unicode){
+        return (
+                (unicode>=0x4e00  && unicode<=0x9fcf)  || // CJK統合漢字
+                (unicode>=0x3400  && unicode<=0x4dbf)  || // CJK統合漢字拡張A
+                (unicode>=0x20000 && unicode<=0x2a6df) || // CJK統合漢字拡張B
+                (unicode>=0xf900  && unicode<=0xfadf)  || // CJK互換漢字
+                (unicode>=0x2f800 && unicode<=0x2fa1f) || // CJK互換漢字補助
+                (unicode>=0x3190 && unicode<=0x319f)   || // 漢文用の記号
+                (unicode>=0x3040 && unicode<=0x309f)   || // ひらがな
+                (unicode>=0x30a0 && unicode<=0x30ff)   || // カタカナ
+                (unicode>=0xff61 && unicode<=0xff9f )     // 半角カタカナ
+                ) ;
+    }
+    
+    static const ustring &SetNotEOL    = convertTTFwstring(NOT_END_OF_LINE_CHARS);
+    static const ustring &SetNotSOL    = convertTTFwstring(NOT_START_OF_LINE_CHARS);
+    static const ustring &SetBreakable = convertTTFwstring(BREAKABLE_CHARS);
+    
 };
 
 
@@ -246,137 +246,137 @@ static bool printVectorInfo = false;
 //--------------------------------------------------------
 static ofTTFCharacter makeContoursForCharacter(FT_Face &face);
 static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
-
-		//int num			= face->glyph->outline.n_points;
-		int nContours	= face->glyph->outline.n_contours;
-		int startPos	= 0;
-
-		char * tags		= face->glyph->outline.tags;
-		FT_Vector * vec = face->glyph->outline.points;
-
-		ofTTFCharacter charOutlines;
-		charOutlines.setUseShapeColor(false);
-
-		for(int k = 0; k < nContours; k++){
-			if( k > 0 ){
-				startPos = face->glyph->outline.contours[k-1]+1;
-			}
-			int endPos = face->glyph->outline.contours[k]+1;
-
-			if(printVectorInfo){
-				ofLogNotice("ofTrueTypeFont") << "--NEW CONTOUR";
-			}
-
-			//vector <ofPoint> testOutline;
-			ofPoint lastPoint;
-
-			for(int j = startPos; j < endPos; j++){
-
-				if( FT_CURVE_TAG(tags[j]) == FT_CURVE_TAG_ON ){
-					lastPoint.set((float)vec[j].x, (float)-vec[j].y, 0);
-					if(printVectorInfo){
-						ofLogNotice("ofTrueTypeFont") << "flag[" << j << "] is set to 1 - regular point - " << lastPoint.x <<  lastPoint.y;
-					}
-					charOutlines.lineTo(lastPoint/64);
-
-				}else{
-					if(printVectorInfo){
-						ofLogNotice("ofTrueTypeFont") << "flag[" << j << "] is set to 0 - control point";
-					}
-
-					if( FT_CURVE_TAG(tags[j]) == FT_CURVE_TAG_CUBIC ){
-						if(printVectorInfo){
-							ofLogNotice("ofTrueTypeFont") << "- bit 2 is set to 2 - CUBIC";
-						}
-
-						int prevPoint = j-1;
-						if( j == 0){
-							prevPoint = endPos-1;
-						}
-
-						int nextIndex = j+1;
-						if( nextIndex >= endPos){
-							nextIndex = startPos;
-						}
-
-						ofPoint nextPoint( (float)vec[nextIndex].x,  -(float)vec[nextIndex].y );
-
-						//we need two control points to draw a cubic bezier
-						bool lastPointCubic =  ( FT_CURVE_TAG(tags[prevPoint]) != FT_CURVE_TAG_ON ) && ( FT_CURVE_TAG(tags[prevPoint]) == FT_CURVE_TAG_CUBIC);
-
-						if( lastPointCubic ){
-							ofPoint controlPoint1((float)vec[prevPoint].x,	(float)-vec[prevPoint].y);
-							ofPoint controlPoint2((float)vec[j].x, (float)-vec[j].y);
-							ofPoint nextPoint((float) vec[nextIndex].x,	-(float) vec[nextIndex].y);
-
-							//cubic_bezier(testOutline, lastPoint.x, lastPoint.y, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, nextPoint.x, nextPoint.y, 8);
-							charOutlines.bezierTo(controlPoint1.x/64, controlPoint1.y/64, controlPoint2.x/64, controlPoint2.y/64, nextPoint.x/64, nextPoint.y/64);
-						}
-
-					}else{
-
-						ofPoint conicPoint( (float)vec[j].x,  -(float)vec[j].y );
-
-						if(printVectorInfo){
-							ofLogNotice("ofTrueTypeFont") << "- bit 2 is set to 0 - conic- ";
-							ofLogNotice("ofTrueTypeFont") << "--- conicPoint point is " << conicPoint.x << conicPoint.y;
-						}
-
-						//If the first point is connic and the last point is connic then we need to create a virutal point which acts as a wrap around
-						if( j == startPos ){
-							bool prevIsConnic = (  FT_CURVE_TAG( tags[endPos-1] ) != FT_CURVE_TAG_ON ) && ( FT_CURVE_TAG( tags[endPos-1]) != FT_CURVE_TAG_CUBIC );
-
-							if( prevIsConnic ){
-								ofPoint lastConnic((float)vec[endPos - 1].x, (float)-vec[endPos - 1].y);
-								lastPoint = (conicPoint + lastConnic) / 2;
-
-								if(printVectorInfo){
-									ofLogNotice("ofTrueTypeFont") << "NEED TO MIX WITH LAST";
-									ofLogNotice("ofTrueTypeFont") << "last is " << lastPoint.x << " " << lastPoint.y;
-								}
-							}
-						}
-
-						//bool doubleConic = false;
-
-						int nextIndex = j+1;
-						if( nextIndex >= endPos){
-							nextIndex = startPos;
-						}
-
-						ofPoint nextPoint( (float)vec[nextIndex].x,  -(float)vec[nextIndex].y );
-
-						if(printVectorInfo){
-							ofLogNotice("ofTrueTypeFont") << "--- last point is " << lastPoint.x << " " <<  lastPoint.y;
-						}
-
-						bool nextIsConnic = (  FT_CURVE_TAG( tags[nextIndex] ) != FT_CURVE_TAG_ON ) && ( FT_CURVE_TAG( tags[nextIndex]) != FT_CURVE_TAG_CUBIC );
-
-						//create a 'virtual on point' if we have two connic points
-						if( nextIsConnic ){
-							nextPoint = (conicPoint + nextPoint) / 2;
-							if(printVectorInfo){
-								ofLogNotice("ofTrueTypeFont") << "|_______ double connic!";
-							}
-						}
-						if(printVectorInfo){
-							ofLogNotice("ofTrueTypeFont") << "--- next point is " << nextPoint.x << " " << nextPoint.y;
-						}
-
-						//quad_bezier(testOutline, lastPoint.x, lastPoint.y, conicPoint.x, conicPoint.y, nextPoint.x, nextPoint.y, 8);
-						charOutlines.quadBezierTo(lastPoint.x/64, lastPoint.y/64, conicPoint.x/64, conicPoint.y/64, nextPoint.x/64, nextPoint.y/64);
-
-						if( nextIsConnic ){
-							lastPoint = nextPoint;
-						}
-					}
-				}
-
+    
+    //int num			= face->glyph->outline.n_points;
+    int nContours	= face->glyph->outline.n_contours;
+    int startPos	= 0;
+    
+    char * tags		= face->glyph->outline.tags;
+    FT_Vector * vec = face->glyph->outline.points;
+    
+    ofTTFCharacter charOutlines;
+    charOutlines.setUseShapeColor(false);
+    
+    for(int k = 0; k < nContours; k++){
+        if( k > 0 ){
+            startPos = face->glyph->outline.contours[k-1]+1;
+        }
+        int endPos = face->glyph->outline.contours[k]+1;
+        
+        if(printVectorInfo){
+            ofLogNotice("ofTrueTypeFont") << "--NEW CONTOUR";
+        }
+        
+        //vector <ofPoint> testOutline;
+        ofPoint lastPoint;
+        
+        for(int j = startPos; j < endPos; j++){
+            
+            if( FT_CURVE_TAG(tags[j]) == FT_CURVE_TAG_ON ){
+                lastPoint.set((float)vec[j].x, (float)-vec[j].y, 0);
+                if(printVectorInfo){
+                    ofLogNotice("ofTrueTypeFont") << "flag[" << j << "] is set to 1 - regular point - " << lastPoint.x <<  lastPoint.y;
+                }
+                charOutlines.lineTo(lastPoint/64);
+                
+            }else{
+                if(printVectorInfo){
+                    ofLogNotice("ofTrueTypeFont") << "flag[" << j << "] is set to 0 - control point";
+                }
+                
+                if( FT_CURVE_TAG(tags[j]) == FT_CURVE_TAG_CUBIC ){
+                    if(printVectorInfo){
+                        ofLogNotice("ofTrueTypeFont") << "- bit 2 is set to 2 - CUBIC";
+                    }
+                    
+                    int prevPoint = j-1;
+                    if( j == 0){
+                        prevPoint = endPos-1;
+                    }
+                    
+                    int nextIndex = j+1;
+                    if( nextIndex >= endPos){
+                        nextIndex = startPos;
+                    }
+                    
+                    ofPoint nextPoint( (float)vec[nextIndex].x,  -(float)vec[nextIndex].y );
+                    
+                    //we need two control points to draw a cubic bezier
+                    bool lastPointCubic =  ( FT_CURVE_TAG(tags[prevPoint]) != FT_CURVE_TAG_ON ) && ( FT_CURVE_TAG(tags[prevPoint]) == FT_CURVE_TAG_CUBIC);
+                    
+                    if( lastPointCubic ){
+                        ofPoint controlPoint1((float)vec[prevPoint].x,	(float)-vec[prevPoint].y);
+                        ofPoint controlPoint2((float)vec[j].x, (float)-vec[j].y);
+                        ofPoint nextPoint((float) vec[nextIndex].x,	-(float) vec[nextIndex].y);
+                        
+                        //cubic_bezier(testOutline, lastPoint.x, lastPoint.y, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, nextPoint.x, nextPoint.y, 8);
+                        charOutlines.bezierTo(controlPoint1.x/64, controlPoint1.y/64, controlPoint2.x/64, controlPoint2.y/64, nextPoint.x/64, nextPoint.y/64);
+                    }
+                    
+                }else{
+                    
+                    ofPoint conicPoint( (float)vec[j].x,  -(float)vec[j].y );
+                    
+                    if(printVectorInfo){
+                        ofLogNotice("ofTrueTypeFont") << "- bit 2 is set to 0 - conic- ";
+                        ofLogNotice("ofTrueTypeFont") << "--- conicPoint point is " << conicPoint.x << conicPoint.y;
+                    }
+                    
+                    //If the first point is connic and the last point is connic then we need to create a virutal point which acts as a wrap around
+                    if( j == startPos ){
+                        bool prevIsConnic = (  FT_CURVE_TAG( tags[endPos-1] ) != FT_CURVE_TAG_ON ) && ( FT_CURVE_TAG( tags[endPos-1]) != FT_CURVE_TAG_CUBIC );
+                        
+                        if( prevIsConnic ){
+                            ofPoint lastConnic((float)vec[endPos - 1].x, (float)-vec[endPos - 1].y);
+                            lastPoint = (conicPoint + lastConnic) / 2;
+                            
+                            if(printVectorInfo){
+                                ofLogNotice("ofTrueTypeFont") << "NEED TO MIX WITH LAST";
+                                ofLogNotice("ofTrueTypeFont") << "last is " << lastPoint.x << " " << lastPoint.y;
+                            }
+                        }
+                    }
+                    
+                    //bool doubleConic = false;
+                    
+                    int nextIndex = j+1;
+                    if( nextIndex >= endPos){
+                        nextIndex = startPos;
+                    }
+                    
+                    ofPoint nextPoint( (float)vec[nextIndex].x,  -(float)vec[nextIndex].y );
+                    
+                    if(printVectorInfo){
+                        ofLogNotice("ofTrueTypeFont") << "--- last point is " << lastPoint.x << " " <<  lastPoint.y;
+                    }
+                    
+                    bool nextIsConnic = (  FT_CURVE_TAG( tags[nextIndex] ) != FT_CURVE_TAG_ON ) && ( FT_CURVE_TAG( tags[nextIndex]) != FT_CURVE_TAG_CUBIC );
+                    
+                    //create a 'virtual on point' if we have two connic points
+                    if( nextIsConnic ){
+                        nextPoint = (conicPoint + nextPoint) / 2;
+                        if(printVectorInfo){
+                            ofLogNotice("ofTrueTypeFont") << "|_______ double connic!";
+                        }
+                    }
+                    if(printVectorInfo){
+                        ofLogNotice("ofTrueTypeFont") << "--- next point is " << nextPoint.x << " " << nextPoint.y;
+                    }
+                    
+                    //quad_bezier(testOutline, lastPoint.x, lastPoint.y, conicPoint.x, conicPoint.y, nextPoint.x, nextPoint.y, 8);
+                    charOutlines.quadBezierTo(lastPoint.x/64, lastPoint.y/64, conicPoint.x/64, conicPoint.y/64, nextPoint.x/64, nextPoint.y/64);
+                    
+                    if( nextIsConnic ){
+                        lastPoint = nextPoint;
+                    }
+                }
+            }
+            
 			//end for
-			}
-			charOutlines.close();
-		}
-
+        }
+        charOutlines.close();
+    }
+    
 	return charOutlines;
 }
 
@@ -397,7 +397,7 @@ static string osxFontPathByName( string fontname ){
 	
 	CFRelease(targetName);
 	CFRelease(targetDescriptor);
-
+    
 	return fontPath;
 }
 #endif
@@ -433,7 +433,7 @@ static string linuxFontPathByName(string fontname){
 	FcResult result;
 	FcPattern * fontMatch=NULL;
 	fontMatch = FcFontMatch(0,pattern,&result);
-
+    
 	if(!fontMatch){
 		ofLogError() << "linuxFontPathByName(): couldn't match font file or system font with name \"" << fontname << "\"";
 		return "";
@@ -493,52 +493,52 @@ static bool loadFontFace(string fontname, int _fontSize, FT_Face & face, string 
 		ofLogError("ofTrueTypeFont") << "loadFontFace(): couldn't create new face for \"" << fontname << "\": FT_Error " << err << " " << errorString;
 		return false;
 	}
-
+    
 	return true;
 }
- 
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ofxTrueTypeFontUL2::Impl 
+// ofxTrueTypeFontUL2::Impl
 class ofxTrueTypeFontUL2::Impl {
 public:
 	Impl();
 	~Impl() {};
-  
-	bool implLoadFont(string filename, float fontsize, bool _bAntiAliased, bool makeContours, float _simplifyAmt, int dpi,bool useTexture,string scriptTageName);
-	bool implLoadSubFont(string filename,float sizeRate, float baseLineRate ,int unicodeRangeStart,int unicodeRangeEnd,string scriptTageName);
-	bool implLoadSubFontVal(string filename,float fontsize, float baseLine ,int unicodeRangeStart,int unicodeRangeEnd,string scriptTageName);
-
+    
+	bool implLoadFont(string filename, float fontsize, bool _bAntiAliased, bool makeContours, float _simplifyAmt, int dpi,bool useTexture,string scriptTagName);
+	bool implLoadSubFont(string filename,float sizeRate, float baseLineRate ,int unicodeRangeStart,int unicodeRangeEnd,string scriptTagName);
+	bool implLoadSubFontVal(string filename,float fontsize, float baseLine ,int unicodeRangeStart,int unicodeRangeEnd,string scriptTagName);
+    
 	void implUnloadFont();
-
+    
 	vector <ofTTFCharacter> charOutlines;
-	vector<ul2_char_layouts_info> cps;  // properties for each character  
-  
+	vector<ul2_char_layouts_info> cps;  // properties for each character
+    
 	void drawChar(int c, float x, float y);
 	void drawCharAsShape(int c, float x, float y);
-  
+    
   	vector<ofTexture> textures;
 	ofMesh stringQuads;
     
 	int getCharID(const int codepoint,const unsigned int faceId);
 	void loadChar(const int & charID);
-
+    
 	vector<ul2_face_info>  faces;
 	vector<ul2_string_layouts_info> getHbPosition(wstring wsrc);
 	map<wstring,vector<ul2_string_layouts_info> > hbPositionCache;
 	vector<ul2_face_codepoint> loadedChars;
 	
-	template <class T> 
+	template <class T>
 	void commonLayouts(wstring src ,float x, float y,float width,float height,int textAlign,ul2_rendering_types type ,T &result);
-	template <class T> 
+	template <class T>
 	void commonLayouts2(wstring src ,float x, float y,float width,float height,ul2_text_align textAlign,vector<ofRectangle> *lineWidthList,ul2_rendering_types type ,T &result);
-
+    
 	void addOTFeature(const char*feature_tag,unsigned int value,unsigned int  start=0,unsigned int end=static_cast<unsigned>(-1));
 	void removeOTFeature(const char*feature_tag);
 	void clearOTFeatures();
 	void printOTFeatures();
-
+    
 	bool bLoadedOk_;
 	bool bAntiAliased_;
 	bool bUseTexture_;
@@ -554,14 +554,14 @@ public:
 	hb_direction_t m_subDirection;
 	unsigned int m_featuresnum;
 	hb_feature_t *m_features;
-	bool bUseVrt2Layout; // added 'vrt2', 
+	bool bUseVrt2Layout; // added 'vrt2',
 	bool bUseProportional; // added 'palt' or 'vpal'
 	bool bUseLayoutCache;
 	bool bAlignByPixel;
 	bool bWordWrap;
 	bool bWritingHorizontal;
-
-
+    
+    
 #ifdef TARGET_OPENGLES
 	GLint blend_src, blend_dst_;
 	GLboolean blend_enabled_;
@@ -576,51 +576,51 @@ ofxTrueTypeFontUL2::Impl::Impl(){
 	letterSpacing_=0.0f;
 	spaceSize_=1.0f;
 	stringQuads.setMode(OF_PRIMITIVE_TRIANGLES);
-
-
+    
+    
 	// 3 pixel border around the glyph
 	// We show 2 pixels of this, so that blending looks good.
 	// 1 pixels is hidden because we don't want to see the real edge of the texture
-
+    
 	border_ = 3;
 	m_direction=HB_DIRECTION_LTR;
 	m_subDirection = HB_DIRECTION_TTB;
 	bWritingHorizontal=true;
-
+    
 	m_featuresnum=0;
 	m_features=NULL;
 	
 	bUseVrt2Layout=false;
 	bUseProportional=false;
 	bUseLayoutCache=false;
-
+    lineHeight_=0;
 	bAlignByPixel=false;
 	bWordWrap=true;
 }
 
-bool ofxTrueTypeFontUL2::Impl::implLoadFont(string filename, float fontsize, bool bAntiAliased, bool makeContours, float simplifyAmt, int dpi,bool useTexture,string scriptTageName) {  
+bool ofxTrueTypeFontUL2::Impl::implLoadFont(string filename, float fontsize, bool bAntiAliased, bool makeContours, float simplifyAmt, int dpi,bool useTexture,string scriptTagName) {
 	bMakeContours_ = makeContours;
 	bUseTexture_ = useTexture;
-
+    
 	if (bLoadedOk_ == true)   implUnloadFont();
 	bLoadedOk_ = false;
-  
+    
 	/*
-	FT_Error err = FT_Init_FreeType(&library);
-	if (err) {
-		ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::loadFont - Error initializing freetype lib: FT_Error = %d", err);
-		return false;
-	}
-	*/
-
+     FT_Error err = FT_Init_FreeType(&library);
+     if (err) {
+     ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::loadFont - Error initializing freetype lib: FT_Error = %d", err);
+     return false;
+     }
+     */
+    
 	dpi_ = dpi;
 	if( dpi_ == 0 )dpi_ = ttfGlobalDpi;
-  
+    
 	bAntiAliased_ = bAntiAliased;
 	simplifyAmt_ = simplifyAmt;
 	baseFontSize_ = fontsize;
-	if(lineHeight_==0)lineHeight_ = baseFontSize_ * 1.43f;
-	bLoadedOk_ = implLoadSubFontVal(filename,baseFontSize_,0,0,0,scriptTageName);
+	if(lineHeight_==0)lineHeight_ = baseFontSize_ * 2.2f;
+	bLoadedOk_ = implLoadSubFontVal(filename,baseFontSize_,0,0,0,scriptTagName);
 	return bLoadedOk_;
 }
 
@@ -639,15 +639,15 @@ void ofxTrueTypeFontUL2::Impl::implUnloadFont(){
 	}
 	faces.clear();
 	//FT_Done_FreeType(library);
-
+    
 	if(m_featuresnum>0)free(m_features);
 	m_featuresnum=0;
-
+    
 	bLoadedOk_ = false;
 }
 
-bool ofxTrueTypeFontUL2::Impl::implLoadSubFontVal(string filename,float fontsize, float baseLine,int unicodeRangeStart,int unicodeRangeEnd,string scriptTageName){
-
+bool ofxTrueTypeFontUL2::Impl::implLoadSubFontVal(string filename,float fontsize, float baseLine,int unicodeRangeStart,int unicodeRangeEnd,string scriptTagName){
+    
 	ul2_face_info set;
 	//set.filename=filename;
 	set.fontsize=fontsize;
@@ -655,24 +655,24 @@ bool ofxTrueTypeFontUL2::Impl::implLoadSubFontVal(string filename,float fontsize
 	set.unicodeRangeEnd=unicodeRangeEnd;
 	set.unicodeRangeStart=unicodeRangeStart;
 	set.hasUnicodeRange=set.unicodeRangeStart<=set.unicodeRangeEnd&&(set.unicodeRangeStart!=0||set.unicodeRangeEnd!=0);
-	set.scriptTagName=scriptTageName;
-
+	set.scriptTagName=scriptTagName;
+    
 	/*
-	FT_Error err;
-	err = FT_New_Face(library, ofToDataPath(set.filename).c_str(), 0, &set.face);
-	if (err) {
-		// simple error table in lieu of full table (see fterrors.h)
-		string errorString = "unknown freetype";
-		if (err == 1)errorString = "INVALID FILENAME";
-		ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::loadFont - %s: %s: FT_Error = %d", errorString.c_str(), filename.c_str(), err);
-		return false;
-	}
-	*/
-
+     FT_Error err;
+     err = FT_New_Face(library, ofToDataPath(set.filename).c_str(), 0, &set.face);
+     if (err) {
+     // simple error table in lieu of full table (see fterrors.h)
+     string errorString = "unknown freetype";
+     if (err == 1)errorString = "INVALID FILENAME";
+     ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::loadFont - %s: %s: FT_Error = %d", errorString.c_str(), filename.c_str(), err);
+     return false;
+     }
+     */
+    
 	if(!loadFontFace(filename,fontsize,set.face,set.filename)){
 		return false;
 	}
-
+    
 	FT_Set_Char_Size(set.face, ceil( set.fontsize * 64.0f), ceil( set.fontsize * 64.0f) , dpi_, dpi_);
 	set.hbfont = hb_font_reference(hb_ft_font_create( set.face, 0 ));
 	hb_ft_font_set_funcs( set.hbfont );
@@ -701,19 +701,19 @@ bool ofxTrueTypeFontUL2::Impl::implLoadSubFontVal(string filename,float fontsize
 		if(cntGSUB>0)free(listGSub);
 		if(cntGPOS>0)free(listGPOS);
 	}
-
+    
 	// scrict direction (not using)
 	set.horiDirection = hb_script_get_horizontal_direction (set.script);
 	faces.push_back(set);
 	return true;
 }
 
-bool ofxTrueTypeFontUL2::Impl::implLoadSubFont(string filename,float sizeRate, float baseLineRate,int unicodeRangeStart,int unicodeRangeEnd,string scriptTageName){
+bool ofxTrueTypeFontUL2::Impl::implLoadSubFont(string filename,float sizeRate, float baseLineRate,int unicodeRangeStart,int unicodeRangeEnd,string scriptTagName){
 	if(faces.size()==0){
 		ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::Impl::implLoadSubFont - Error Base Font is not loaded.");
 		return false;
 	}
-	return implLoadSubFontVal(filename,baseFontSize_*sizeRate,baseFontSize_*baseLineRate,unicodeRangeStart,unicodeRangeEnd,scriptTageName);
+	return implLoadSubFontVal(filename,baseFontSize_*sizeRate,baseFontSize_*baseLineRate,unicodeRangeStart,unicodeRangeEnd,scriptTagName);
 }
 
 void ofxTrueTypeFontUL2::Impl::addOTFeature(const char*feature_tag,unsigned int value,unsigned int  start,unsigned int end){
@@ -779,30 +779,30 @@ vector<ul2_string_layouts_info> ofxTrueTypeFontUL2::Impl::getHbPosition(wstring 
 	const int len = (int)src.length();
 	const int facenum=faces.size();
 	const bool _dirNormal=m_direction==HB_DIRECTION_LTR||m_direction==HB_DIRECTION_TTB;
-
+    
 	ul2_face_buffer_info*fBuffs =(ul2_face_buffer_info*)malloc(sizeof(ul2_face_buffer_info)*facenum);
 	ul2_face_buffer_info *abuff;
 	int k,i,t,cy,c,kbs;
-
+    
 	for(i=0;i<facenum;i++){
 		abuff=fBuffs+i;
         abuff->buffer= hb_buffer_create();
 		hb_buffer_set_script(abuff->buffer,faces[i].script);
 		hb_buffer_set_direction( abuff->buffer, m_direction );
-		//Check this cast ,except windows and mac. 
+		//Check this cast ,except windows and mac.
 		hb_buffer_add_utf32( abuff->buffer, (const uint32_t*)src.c_str(),len,0,len);
         hb_shape( faces[i].hbfont, abuff->buffer, m_features, m_featuresnum);
 		abuff->size=hb_buffer_get_length(abuff->buffer);
 		const int pt=_dirNormal?0:(abuff->size-1);
-		abuff->pos=hb_buffer_get_glyph_positions( abuff->buffer,NULL )+pt; 
+		abuff->pos=hb_buffer_get_glyph_positions( abuff->buffer,NULL )+pt;
 		abuff->info=hb_buffer_get_glyph_infos ( abuff->buffer, NULL )+pt;
 		abuff->index=pt;
 	}
-	 
+    
 	k=0;
 	kbs=-1;
 	for(i=0;i<len;){
-		if(src[i]>0x0020){ 
+		if(src[i]>0x0020){
 			for(k=facenum-1;k>0;k--){
 				if(fBuffs[k].info->codepoint!=0){
 					if(faces[k].hasUnicodeRange==1){
@@ -811,7 +811,7 @@ vector<ul2_string_layouts_info> ofxTrueTypeFontUL2::Impl::getHbPosition(wstring 
 				}
 			}
 		}else{
-			//Calculate space size.(that between different faces) 
+			//Calculate space size.(that between different faces)
 			if(i+1<len){
 				for(t=facenum-1;t>0;t--){
 					if(FT_Get_Char_Index(faces[t].face,src[i+1])>0){
@@ -823,31 +823,31 @@ vector<ul2_string_layouts_info> ofxTrueTypeFontUL2::Impl::getHbPosition(wstring 
 				if(k!=t)kbs=t;
 			}
 		}
-
+        
 		abuff=fBuffs+k;
 		cy = getCharID(abuff->info->codepoint,k);
 		
 		ul2_string_layouts_info v;
-
+        
 		if(kbs==-1){
 			v.x_advance = abuff->pos->x_advance / 64.0f;
-			v.y_advance = -abuff->pos->y_advance / 64.0f;	
+			v.y_advance = -abuff->pos->y_advance / 64.0f;
 		}else{
 			v.x_advance =   MIN(abuff->pos->x_advance,(fBuffs+kbs)->pos->x_advance) / 64.0f;
-			v.y_advance = - MIN(abuff->pos->y_advance,(fBuffs+kbs)->pos->y_advance) / 64.0f;	
+			v.y_advance = - MIN(abuff->pos->y_advance,(fBuffs+kbs)->pos->y_advance) / 64.0f;
 			kbs=-1;
 		}
 		if(bWritingHorizontal){
 			v.x_offset = abuff->pos->x_offset / 64.0f;
 			v.y_offset = -abuff->pos->y_offset / 64.0f  -faces[k].baseLine;
 		}else{
-			//HarfBuzz should use the x_offset value by documents, 
+			//HarfBuzz should use the x_offset value by documents,
 			//but value of X is deviates slightly.(on Jpanese vertical font)
 			//So this zero point(X) is get by freeType values (horiAdvance*.5f);
 			v.x_offset = cps[cy].vx_offset + faces[k].baseLine;
 			v.y_offset = cps[cy].vy_offset - abuff->pos->y_offset / 64.0f;
 		}
-
+        
 		v.x1 = cps[cy].x1;
 		v.x2 = cps[cy].x2;
 		v.y1 = cps[cy].y1;
@@ -856,13 +856,13 @@ vector<ul2_string_layouts_info> ofxTrueTypeFontUL2::Impl::getHbPosition(wstring 
 		v.hasFace = cps[cy].hasFace;
 		v.character = src[i];
 		v.breakable = (ul2_ttf_utils::SetNotEOL.find(src[i])==string::npos &&
-			(ul2_ttf_utils::isCJK(src[i])||(i<len-1?ul2_ttf_utils::isCJK(src[i+1]):true)||ul2_ttf_utils::SetBreakable.find(src[i])!=string::npos) &&
-			(i<len-1? ul2_ttf_utils::SetNotSOL.find(src[i+1])==string::npos :true))?1:0;
+                       (ul2_ttf_utils::isCJK(src[i])||(i<len-1?ul2_ttf_utils::isCJK(src[i+1]):true)||ul2_ttf_utils::SetBreakable.find(src[i])!=string::npos) &&
+                       (i<len-1? ul2_ttf_utils::SetNotSOL.find(src[i+1])==string::npos :true))?1:0;
 		result.push_back(v);
-
+        
 		//On line-break,activate default face;
 		if(src[i]==L'\n')k=0;
-
+        
 		if(_dirNormal){
 			if(abuff->size-1 > abuff->index){
 				//Recovery for cluster values
@@ -897,7 +897,7 @@ vector<ul2_string_layouts_info> ofxTrueTypeFontUL2::Impl::getHbPosition(wstring 
 			}else break;
 		}
 	}
-
+    
 	//Clear memory.
 	for(i=0;i<facenum;i++)hb_buffer_destroy((fBuffs+i)->buffer);
 	free(fBuffs);
@@ -913,21 +913,21 @@ inline void _setRect(ofRectangle &t,float x,float y,float w,float h){t.x=x;t.y=y
 
 template<class T>
 void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,float width,float height,ul2_text_align textAlign,vector<ofRectangle> *lineWidthList,ul2_rendering_types type ,T &result){
-
+    
 	const vector<ul2_string_layouts_info> &pos=getHbPosition(src);
-	const int len = pos.size();	
-
-	//control direction 
+	const int len = pos.size();
+    
+	//control direction
 	const float rvRTL = m_direction==HB_DIRECTION_RTL ? -1.0f: 1.0f ;
 	const float rvBTT = m_direction==HB_DIRECTION_BTT ? -1.0f: 1.0f ;
-
+    
 	//letterSpacing
 	const float h_letterSpace = (bWritingHorizontal? baseFontSize_ * letterSpacing_ : 0.0f ) * rvRTL;
 	const float v_letterSpace = (bWritingHorizontal? 0.0f : baseFontSize_ * letterSpacing_ ) * rvBTT;
 	const float h_space = spaceSize_ * rvRTL ;
 	const float v_space = spaceSize_ * rvBTT ;
 	const float boxWidth =  bWritingHorizontal? width:height;
-
+    
 	//
 	unsigned int index	= 0;
 	float X = 0;
@@ -941,20 +941,20 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 	float maxy = 0;
 	bool bFirstCharacter = true;
 	float x1,y1,x2,y2;
-
+    
 	int lineIndex=0;
 	float ax,ay;
     ax=x;
 	ay=y;
-
+    
 	bool lineBreak=false;
 	bool setAlign=textAlign!=UL2_TEXT_ALIGN_INVALID;
-
+    
 	while (index < len) {
 		//Set alignment.
 		if(setAlign){
 			if(textAlign==UL2_TEXT_ALIGN_LEFT){
-				if(bAlignByPixel|m_direction!=HB_DIRECTION_LTR) ax=x-(*lineWidthList)[lineIndex].x;
+				if(bAlignByPixel||m_direction!=HB_DIRECTION_LTR) ax=x-(*lineWidthList)[lineIndex].x;
 			}else if(textAlign==UL2_TEXT_ALIGN_CENTER){
 				ax=x+(width-(*lineWidthList)[lineIndex].width)*.5-(*lineWidthList)[lineIndex].x;
 			}else if(textAlign==UL2_TEXT_ALIGN_RIGHT){
@@ -971,7 +971,7 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 			lineIndex++;
 			setAlign=false;
 		}
-
+        
 		if (pos[index].character == L'\n') {
 			lineBreak=true;
 		}else{
@@ -983,13 +983,13 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 				//Update pen position. (reverse direction)
 				X += m_direction==HB_DIRECTION_RTL ? - pos[index].x_advance : 0 ;
 				Y += m_direction==HB_DIRECTION_BTT ? - pos[index].y_advance : 0 ;
-
+                
 				//------------------------------------------------------------------------------------
 				x1 = X +ax + pos[index].x1+pos[index].x_offset;
 				y1 = Y +ay + pos[index].y1+pos[index].y_offset;
 				x2 = X +ax + pos[index].x2+pos[index].x_offset;
 				y2 = Y +ay + pos[index].y2+pos[index].y_offset;
-
+                
 				if(type==UL2_GET_BOUNDINGBOX||type==UL2_GET_LINE_WIDTH){
 					//Get bounding box.
 					if (bFirstCharacter == true) {
@@ -1022,11 +1022,11 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 				X += m_direction==HB_DIRECTION_RTL ? 0 : pos[index].x_advance ;
 				Y += m_direction==HB_DIRECTION_BTT ? 0 : pos[index].y_advance ;
 			}
-			//Add letter spacing. 
+			//Add letter spacing.
 			X += h_letterSpace ;
 			Y += v_letterSpace ;
 			
-			//Calculate a line-break position. 
+			//Calculate a line-break position.
 			if(boxWidth>0){
 				if(!bWordWrap||pos[index].breakable){
 					_index=index+1;_X=X;_Y=Y;
@@ -1035,9 +1035,9 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 						_X += m_direction==HB_DIRECTION_RTL ? - pos[_index].x_advance : 0 ;
 						_Y += m_direction==HB_DIRECTION_BTT ? - pos[_index].y_advance : 0 ;
 						if((m_direction==HB_DIRECTION_LTR && (_X + pos[_index].x1+pos[_index].x_offset>boxWidth))||
-							(m_direction==HB_DIRECTION_RTL && (_X + pos[_index].x2+pos[_index].x_offset<-boxWidth))||
-							(m_direction==HB_DIRECTION_TTB && (_Y + pos[_index].y1+pos[_index].y_offset>boxWidth))||
-							(m_direction==HB_DIRECTION_BTT && (_Y + pos[_index].y2+pos[_index].y_offset<-boxWidth))){
+                           (m_direction==HB_DIRECTION_RTL && (_X + pos[_index].x2+pos[_index].x_offset<-boxWidth))||
+                           (m_direction==HB_DIRECTION_TTB && (_Y + pos[_index].y1+pos[_index].y_offset>boxWidth))||
+                           (m_direction==HB_DIRECTION_BTT && (_Y + pos[_index].y2+pos[_index].y_offset<-boxWidth))){
 							lineBreak=true;
 							break;
 						}else if(!bWordWrap||pos[_index].breakable)break;
@@ -1059,16 +1059,16 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 		//Update pen position. (line-break)
 		if(lineBreak){
 			if(m_subDirection==HB_DIRECTION_TTB){
-				X = 0 ; 
+				X = 0 ;
 				Y += lineHeight_;
 			}else if(m_subDirection==HB_DIRECTION_BTT){
-				X = 0 ; 
+				X = 0 ;
 				Y -= lineHeight_;
 			}else if(m_subDirection==HB_DIRECTION_RTL){
-				X -= lineHeight_ ; 
+				X -= lineHeight_ ;
 				Y = 0 ;
 			}else if(m_subDirection==HB_DIRECTION_LTR){
-				X += lineHeight_ ; 
+				X += lineHeight_ ;
 				Y = 0 ;
 			}
 			if(type==UL2_GET_LINE_WIDTH){
@@ -1080,7 +1080,7 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 		}
 		index++;
 	}
-
+    
 	//-------------------------------------------------------------------------------
 	if(type==UL2_GET_BOUNDINGBOX)_setRect(result,minx,miny,maxx-minx,maxy-miny);
 	if(type==UL2_GET_LINE_WIDTH){
@@ -1111,7 +1111,7 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts(wstring src ,float x, float y,float
 				if(y2<wList[i].y+wList[i].height)y2=wList[i].y+wList[i].height;
 			}
 			vBox.x=x1;
-			vBox.y=x1;
+			vBox.y=y1;
 			vBox.width=x2-x1;
 			vBox.height=y2-y1;
 		}else{
@@ -1119,7 +1119,7 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts(wstring src ,float x, float y,float
 			if     ( m_subDirection == HB_DIRECTION_TTB ) vBox.y = -baseFontSize_;
 			else if( m_subDirection == HB_DIRECTION_BTT ) vBox.y = -vBox.height;
 			else if( m_subDirection == HB_DIRECTION_LTR ) vBox.x = -baseFontSize_*.5f;
-			else if( m_subDirection == HB_DIRECTION_RTL ) vBox.x = -(vBox.width - baseFontSize_*.5f);			
+			else if( m_subDirection == HB_DIRECTION_RTL ) vBox.x = -(vBox.width - baseFontSize_*.5f);
 		}
 		if(bWritingHorizontal){
 			if     ( textAlign & UL2_TEXT_ALIGN_LEFT     ) align = UL2_TEXT_ALIGN_LEFT;
@@ -1169,52 +1169,52 @@ void ofxTrueTypeFontUL2::Impl::loadChar(const int & charID) {
 	//------------------------------------------ anti aliased or not:
 	FT_Error err = FT_Load_Glyph( set.face, loadedChars[i].codepoint,FT_LOAD_DEFAULT);
 	if(err)ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::loadFont - Error with FT_Load_Glyph %i: FT_Error = %d", loadedChars[i] , err);
-
-
+    
+    
 	float width,height,topExtent,leftextent,vx,vy;
 	width = set.face->glyph->metrics.width / 64.0f;
 	height = set.face->glyph->metrics.height / 64.0f;
 	topExtent  = -set.face->glyph->metrics.horiBearingY / 64.0f ;
 	leftextent = set.face->glyph->metrics.horiBearingX / 64.0f ;
-
+    
 	vy=set.face->glyph->metrics.vertBearingY / 64.0f;
 	vx=-set.face->glyph->metrics.horiAdvance /64.0f*.5f;
-
+    
 	cps[i].vx_offset=vx;
 	cps[i].vy_offset=vy;
-
+    
 	cps[i].x1 = leftextent + width ;
-	cps[i].x2 = leftextent;	
+	cps[i].x2 = leftextent;
 	cps[i].y1 = topExtent + height;
 	cps[i].y2 = topExtent;
 	cps[i].hasFace=width>0&&height>0?1:0;
-
+    
 	if(cps[i].hasFace==0)return;
-
+    
 	//Build shape or texture data.
 	if (bMakeContours_) {
-		if (printVectorInfo)printf("\n\ncharacter charID %d: \n", i );     
+		if (printVectorInfo)printf("\n\ncharacter charID %d: \n", i );
 		charOutlines[i] = makeContoursForCharacter(set.face);
 		if (simplifyAmt_>0)charOutlines[i].simplify(simplifyAmt_);
 		charOutlines[i].getTessellation();
 	}
-
+    
 	if(bUseTexture_){
 		if (bAntiAliased_ == true)
 			FT_Render_Glyph(set.face->glyph, FT_RENDER_MODE_NORMAL);
 		else
 			FT_Render_Glyph(set.face->glyph, FT_RENDER_MODE_MONO);
-  
+        
 		//------------------------------------------
 		FT_Bitmap& bitmap = set.face->glyph->bitmap;
-
+        
 		ofPixels expandedData;
 		// Allocate Memory For The Texture Data.
 		expandedData.allocate(width, height, 2);
 		//-------------------------------- clear data:
 		expandedData.set(0,255); // every luminance pixel = 255
 		expandedData.set(1,0);
-  
+        
 		if (bAntiAliased_ == true) {
 			ofPixels bitmapPixels;
 			bitmapPixels.setFromExternalPixels(bitmap.buffer,bitmap.width,bitmap.rows,1);
@@ -1230,10 +1230,10 @@ void ofxTrueTypeFontUL2::Impl::loadChar(const int & charID) {
 				unsigned char *bptr =  src;
 				for(int k=0; k<bitmap.width; ++k){
 					expandedData[2*(k+j*width)] = 255;
-        
+                    
 					if (k%8==0)
 						b = (*bptr++);
-        
+                    
 					expandedData[2*(k+j*width) + 1] = b&0x80 ? 255 : 0;
 					b <<= 1;
 				}
@@ -1241,30 +1241,30 @@ void ofxTrueTypeFontUL2::Impl::loadChar(const int & charID) {
 			}
 			//-----------------------------------
 		}
-  
+        
 		int longSide = border_ * 2;
 		width > height ? longSide += width : longSide += height;
-  
+        
 		int tmp = 1;
 		while (longSide > tmp) {
 			tmp <<= 1;
 		}
 		int w = tmp;
 		int h = w;
-  
+        
 		ofPixels atlasPixels;
 		atlasPixels.allocate(w,h,2);
 		atlasPixels.set(0,255);
 		atlasPixels.set(1,0);
-  
+        
 		cps[i].t2 = float(border_) / float(w);
 		cps[i].v2 = float(border_) / float(h);
 		cps[i].t1 = float(width + border_) / float(w);
 		cps[i].v1 = float(height + border_) / float(h);
 		expandedData.pasteInto(atlasPixels, border_, border_);
-  
+        
 		textures[i].allocate(atlasPixels.getWidth(), atlasPixels.getHeight(), GL_LUMINANCE_ALPHA, false);
-  
+        
 		if (bAntiAliased_ && set.fontsize>20) {
 			textures[i].setTextureMinMagFilter(GL_LINEAR,GL_LINEAR);
 		}else {
@@ -1282,9 +1282,9 @@ void ofxTrueTypeFontUL2::Impl::drawChar(int c, float x, float y) {
 		//ofLog(OF_LOG_ERROR,"Error : char (%i) not allocated -- line %d in %s", (c + NUM_CHARACTER_TO_START), __LINE__,__FILE__);
 		return;
 	}
-
+    
 	///bind()/////////////////////////////////////////////////////////
-
+    
 	// we need transparency to draw text, but we don't know
 	// if that is set up in outside of this function
 	// we "pushAttrib", turn on alpha and "popAttrib"
@@ -1307,52 +1307,52 @@ void ofxTrueTypeFontUL2::Impl::drawChar(int c, float x, float y) {
 	glGetIntegerv( GL_BLEND_DST, &blend_dst );
 #endif
 	// (b) enable our regular ALPHA blending!
-
+    
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
 	textures[c].bind();
 	stringQuads.clear();
-
-
+    
+    
 	//drawChar()//////////////////////////////////////////////////////
-
+    
 	x=floor(x);
 	y=floor(y);
-
+    
 	GLfloat	x1, y1, x2, y2;
 	GLfloat t1, v1, t2, v2;
 	t2 = cps[c].t2;
 	v2 = cps[c].v2;
 	t1 = cps[c].t1;
 	v1 = cps[c].v1;
-  
+    
 	x1 = cps[c].x1+x;
 	y1 = cps[c].y1+y;
 	x2 = cps[c].x2+x;
 	y2 = cps[c].y2+y;
-  
+    
 	int firstIndex = stringQuads.getVertices().size();
-  
+    
 	stringQuads.addVertex(ofVec3f(x1,y1));
 	stringQuads.addVertex(ofVec3f(x2,y1));
 	stringQuads.addVertex(ofVec3f(x2,y2));
 	stringQuads.addVertex(ofVec3f(x1,y2));
-  
+    
 	stringQuads.addTexCoord(ofVec2f(t1,v1));
 	stringQuads.addTexCoord(ofVec2f(t2,v1));
 	stringQuads.addTexCoord(ofVec2f(t2,v2));
 	stringQuads.addTexCoord(ofVec2f(t1,v2));
-  
+    
 	stringQuads.addIndex(firstIndex);
 	stringQuads.addIndex(firstIndex+1);
 	stringQuads.addIndex(firstIndex+2);
 	stringQuads.addIndex(firstIndex+2);
 	stringQuads.addIndex(firstIndex+3);
 	stringQuads.addIndex(firstIndex);
-
+    
 	//unbind()//////////////////////////////////////////////////////////
-
+    
 	stringQuads.drawFaces();
 	textures[c].unbind();
     
@@ -1363,7 +1363,7 @@ void ofxTrueTypeFontUL2::Impl::drawChar(int c, float x, float y) {
 	if (!texture_2d_enabled)glDisable(GL_TEXTURE_2D);
 	glBlendFunc( blend_src, blend_dst );
 #endif
-
+    
 }
 //-----------------------------------------------------------
 void ofxTrueTypeFontUL2::Impl::drawCharAsShape(int c, float x, float y) {
@@ -1384,37 +1384,37 @@ void ofxTrueTypeFontUL2::setGlobalDpi(int newDpi){
 
 #if defined(TARGET_ANDROID) || defined(TARGET_OF_IPHONE)
 #include <set>
-	static set<ofxTrueTypeFontUL2*> & all_fonts(){
-		static set<ofxTrueTypeFontUL2*> *all_fonts = new set<ofxTrueTypeFontUL2*>;
-		return *all_fonts;
-	}
+static set<ofxTrueTypeFontUL2*> & all_fonts(){
+    static set<ofxTrueTypeFontUL2*> *all_fonts = new set<ofxTrueTypeFontUL2*>;
+    return *all_fonts;
+}
 
-	void ofUnloadAllFontTextures(){
-		set<ofxTrueTypeFontUL2*>::iterator it;
-		for(it=all_fonts().begin();it!=all_fonts().end();it++){
-			(*it)->unloadFont();
-		}
-	}
+void ofUnloadAllFontTextures(){
+    set<ofxTrueTypeFontUL2*>::iterator it;
+    for(it=all_fonts().begin();it!=all_fonts().end();it++){
+        (*it)->unloadFont();
+    }
+}
 
-	void ofReloadAllFontTextures(){
-		set<ofxTrueTypeFontUL2*>::iterator it;
-		for(it=all_fonts().begin();it!=all_fonts().end();it++){
-			(*it)->reloadFont();
-		}
-	}
+void ofReloadAllFontTextures(){
+    set<ofxTrueTypeFontUL2*>::iterator it;
+    for(it=all_fonts().begin();it!=all_fonts().end();it++){
+        (*it)->reloadFont();
+    }
+}
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //ofxTrueTypeFontUL2
 ofxTrueTypeFontUL2::ofxTrueTypeFontUL2() {
 	initLibraries();
-
+    
 	mImpl = new Impl();
-
+    
 #if defined(TARGET_ANDROID) || defined(TARGET_OF_IPHONE)
 	all_fonts().insert(this);
 #endif
-
+    
 	setTextDirection(UL2_TEXT_DIRECTION_LTR);
 	setLetterSpacing(0.0f);
 	setSpaceSize(1.0f);
@@ -1429,17 +1429,17 @@ ofxTrueTypeFontUL2::~ofxTrueTypeFontUL2() {
 	if (mImpl->bLoadedOk_)unloadFont();
 #if defined(TARGET_ANDROID) || defined(TARGET_OF_IPHONE)
 	all_fonts().erase(this);
-#endif  
+#endif
 	if (mImpl != NULL)delete mImpl;
 }
 
 //-----------------------------------------------------------
-bool ofxTrueTypeFontUL2::loadFont(string filename, float fontsize, bool _bAntiAliased, bool makeContours, float _simplifyAmt, int _dpi,bool useTexture,string scriptTageName) {
-	return mImpl->implLoadFont(filename, fontsize, _bAntiAliased, makeContours, _simplifyAmt, _dpi,useTexture,scriptTageName);
+bool ofxTrueTypeFontUL2::loadFont(string filename, float fontsize, bool _bAntiAliased, bool makeContours, float _simplifyAmt, int _dpi,bool useTexture,string scriptTagName) {
+	return mImpl->implLoadFont(filename, fontsize, _bAntiAliased, makeContours, _simplifyAmt, _dpi,useTexture,scriptTagName);
 }
 
-bool ofxTrueTypeFontUL2::loadSubFont(string filename,float sizeRate, float baseLineRate,int unicodeRangeStart,int unicodeRangeEnd,string scriptTageName){
-	return mImpl->implLoadSubFont(filename, sizeRate, baseLineRate,unicodeRangeStart,unicodeRangeEnd,scriptTageName);
+bool ofxTrueTypeFontUL2::loadSubFont(string filename,float sizeRate, float baseLineRate,int unicodeRangeStart,int unicodeRangeEnd,string scriptTagName){
+	return mImpl->implLoadSubFont(filename, sizeRate, baseLineRate,unicodeRangeStart,unicodeRangeEnd,scriptTagName);
 }
 
 void ofxTrueTypeFontUL2::reloadFont() {
@@ -1553,17 +1553,17 @@ void ofxTrueTypeFontUL2::setTextDirection(ul2_text_direction direction,ul2_text_
 	}else if(direction==UL2_TEXT_DIRECTION_TTB){
 		//Top to Bottom
 		mImpl->m_direction = HB_DIRECTION_TTB;
-		mImpl->m_subDirection = subDirection==UL2_TEXT_DIRECTION_LTR?HB_DIRECTION_LTR:HB_DIRECTION_RTL;	
+		mImpl->m_subDirection = subDirection==UL2_TEXT_DIRECTION_LTR?HB_DIRECTION_LTR:HB_DIRECTION_RTL;
 		mImpl->bWritingHorizontal=false;
 	}else if(direction==UL2_TEXT_DIRECTION_BTT){
 		//Bottom to Top
 		mImpl->m_direction = HB_DIRECTION_BTT;
-		mImpl->m_subDirection = subDirection==UL2_TEXT_DIRECTION_RTL?HB_DIRECTION_RTL:HB_DIRECTION_LTR;	
+		mImpl->m_subDirection = subDirection==UL2_TEXT_DIRECTION_RTL?HB_DIRECTION_RTL:HB_DIRECTION_LTR;
 		mImpl->bWritingHorizontal=false;
 	}else{
 		//Left to Right
 		mImpl->m_direction = HB_DIRECTION_LTR;
-		mImpl->m_subDirection = subDirection==UL2_TEXT_DIRECTION_BTT?HB_DIRECTION_BTT:HB_DIRECTION_TTB;		
+		mImpl->m_subDirection = subDirection==UL2_TEXT_DIRECTION_BTT?HB_DIRECTION_BTT:HB_DIRECTION_TTB;
 		mImpl->bWritingHorizontal=true;
 	}
 	useProportional(mImpl->bUseProportional);
@@ -1679,7 +1679,7 @@ bool ofxTrueTypeFontUL2::initLibraries(){
 	if(!librariesInitialized){
 	    FT_Error err;
 	    err = FT_Init_FreeType( &library );
-
+        
 	    if (err){
 			ofLogError("ofTrueTypeFont") << "loadFont(): couldn't initialize Freetype lib: FT_Error " << err;
 			return false;
