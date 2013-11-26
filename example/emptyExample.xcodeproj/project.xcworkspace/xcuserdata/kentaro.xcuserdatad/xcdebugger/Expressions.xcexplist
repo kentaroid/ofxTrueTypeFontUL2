@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "GLOBAL">
+         <PersistentStrings>
+            <PersistentString
+               value = "infos[k]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofxTrueTypeFontUL2::Impl::getHbPosition(std::basic_string&lt;wchar_t, std::char_traits&lt;wchar_t&gt;, std::allocator&lt;wchar_t&gt; &gt;):ofxTrueTypeFontUL2.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "ofxTrueTypeFontUL2::Impl::getHbPosition(std::basic_string&lt;int, std::char_traits&lt;int&gt;, std::allocator&lt;int&gt; &gt;):ofxTrueTypeFontUL2.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "infos[2]+8">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
