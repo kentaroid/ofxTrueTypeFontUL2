@@ -14,18 +14,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---
 
-Includes openFrameworks
-https://github.com/openframeworks/openFrameworks
-Copyright (c) 2004 - openFrameworks Community
-licensed under the MIT.
+Includes openFrameworks  
+https://github.com/openframeworks/openFrameworks  
+Copyright (c) 2004 - openFrameworks Community  
+licensed under the MIT.  
 
-Includes ofxTrueTypeFontUC
-https://github.com/hironishihara/ofxTrueTypeFontUC
-Copyright (c) 2011- openFrameworks Community and hironishihara
-licensed under the MIT.
+Includes ofxTrueTypeFontUC  
+https://github.com/hironishihara/ofxTrueTypeFontUC  
+Copyright (c) 2011- openFrameworks Community and hironishihara  
+licensed under the MIT.  
 
-Includes HarfBuzz
-http://www.freedesktop.org/wiki/Software/HarfBuzz/
-[HarfBuzz COPYING](https://github.com/behdad/harfbuzz/blob/master/COPYING)
-licensed under the so-called "Old MIT" license. 
+Includes HarfBuzz  
+http://www.freedesktop.org/wiki/Software/HarfBuzz/  
+[HarfBuzz COPYING](https://github.com/behdad/harfbuzz/blob/master/COPYING)  
+licensed under the so-called "Old MIT" license.  
 
