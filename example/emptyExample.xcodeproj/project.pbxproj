@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		96E40961183CD727008F44E2 /* ofxTrueTypeFontUL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96E4095F183CD727008F44E2 /* ofxTrueTypeFontUL2.cpp */; };
-		96E40963183CDB15008F44E2 /* libharfbuzz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E40962183CDB15008F44E2 /* libharfbuzz.a */; };
+		96BF51301847A2D90046B4E9 /* ofxTrueTypeFontUL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96BF512E1847A2D90046B4E9 /* ofxTrueTypeFontUL2.cpp */; };
+		96BF51321847A2E90046B4E9 /* libharfbuzz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BF51311847A2E90046B4E9 /* libharfbuzz.a */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -62,9 +62,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		96E4095F183CD727008F44E2 /* ofxTrueTypeFontUL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxTrueTypeFontUL2.cpp; path = ../src/ofxTrueTypeFontUL2.cpp; sourceTree = "<group>"; };
-		96E40960183CD727008F44E2 /* ofxTrueTypeFontUL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTrueTypeFontUL2.h; path = ../src/ofxTrueTypeFontUL2.h; sourceTree = "<group>"; };
-		96E40962183CDB15008F44E2 /* libharfbuzz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libharfbuzz.a; path = ../libs/harfbuzz/lib/osx/libharfbuzz.a; sourceTree = "<group>"; };
+		96BF512E1847A2D90046B4E9 /* ofxTrueTypeFontUL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxTrueTypeFontUL2.cpp; path = ../../../addons/ofxTrueTypeFontUL2/src/ofxTrueTypeFontUL2.cpp; sourceTree = "<group>"; };
+		96BF512F1847A2D90046B4E9 /* ofxTrueTypeFontUL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTrueTypeFontUL2.h; path = ../../../addons/ofxTrueTypeFontUL2/src/ofxTrueTypeFontUL2.h; sourceTree = "<group>"; };
+		96BF51311847A2E90046B4E9 /* libharfbuzz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libharfbuzz.a; path = ../../../addons/ofxTrueTypeFontUL2/libs/harfbuzz/lib/osx/libharfbuzz.a; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -96,7 +96,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96E40963183CDB15008F44E2 /* libharfbuzz.a in Frameworks */,
 				E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */,
 				E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */,
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
@@ -106,6 +105,7 @@
 				E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */,
 				E45BE97E0E8CC7DD009D7055 /* Carbon.framework in Frameworks */,
 				E45BE97F0E8CC7DD009D7055 /* CoreAudio.framework in Frameworks */,
+				96BF51321847A2E90046B4E9 /* libharfbuzz.a in Frameworks */,
 				E45BE9800E8CC7DD009D7055 /* CoreFoundation.framework in Frameworks */,
 				E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */,
 				E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */,
@@ -139,17 +139,10 @@
 		96E4095E183CD715008F44E2 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				96E4095F183CD727008F44E2 /* ofxTrueTypeFontUL2.cpp */,
-				96E40960183CD727008F44E2 /* ofxTrueTypeFontUL2.h */,
+				96BF512E1847A2D90046B4E9 /* ofxTrueTypeFontUL2.cpp */,
+				96BF512F1847A2D90046B4E9 /* ofxTrueTypeFontUL2.h */,
 			);
 			name = src;
-			sourceTree = "<group>";
-		};
-		BB4B014C10F69532006C3DED /* addons */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = addons;
 			sourceTree = "<group>";
 		};
 		BBAB23C913894ECA00AA2426 /* system frameworks */ = {
@@ -177,6 +170,7 @@
 		BBAB23CA13894EDB00AA2426 /* 3rd party frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				96BF51311847A2E90046B4E9 /* libharfbuzz.a */,
 				BBAB23BE13894E4700AA2426 /* GLUT.framework */,
 			);
 			name = "3rd party frameworks";
@@ -202,13 +196,11 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
-				96E40962183CDB15008F44E2 /* libharfbuzz.a */,
 				96E40959183CD674008F44E2 /* addons */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
-				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
 				E4B69B5B0A3A1756003C02F2 /* emptyExampleDebug.app */,
 			);
@@ -321,7 +313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
-				96E40961183CD727008F44E2 /* ofxTrueTypeFontUL2.cpp in Sources */,
+				96BF51301847A2D90046B4E9 /* ofxTrueTypeFontUL2.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
