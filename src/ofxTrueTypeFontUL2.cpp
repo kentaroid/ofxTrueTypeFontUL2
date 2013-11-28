@@ -1072,6 +1072,7 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 					//Get shapes.
 					ofPath path=charOutlines[pos[index].cy];
 					path.translate(ofPoint(ax+X+pos[index].x_offset,ay+Y+pos[index].y_offset));
+					if (simplifyAmt_>0)path.simplify(simplifyAmt_);
 					_push_back(result,path);
 				}else if(type==UL2_DRAW_TEXTURE){
 					//Draw textures.
@@ -1145,11 +1146,8 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 	}
     
 	//-------------------------------------------------------------------------------
-	if(type==UL2_GET_BOUNDINGBOX)_setRect(result,minx,miny,maxx-minx,maxy-miny);
-	if(type==UL2_GET_LINE_WIDTH){
-		bFirstCharacter=true;
-		_push_back(result,ofRectangle(minx,miny,maxx-minx,maxy-miny));
-	}
+	if(type==UL2_GET_BOUNDINGBOX) _setRect(result,minx,miny,maxx-minx,maxy-miny);
+	if(type==UL2_GET_LINE_WIDTH) _push_back(result,ofRectangle(minx,miny,maxx-minx,maxy-miny));
 	//-------------------------------------------------------------------------------
 }
 
@@ -1690,6 +1688,8 @@ vector<ofPath> ofxTrueTypeFontUL2::getStringAsPoints(wstring src,float x, float 
 vector<ofPath> ofxTrueTypeFontUL2::getStringAsPoints(string src,float x, float y,float width,float height,int textAlign) {
 	return getStringAsPoints(ul2_ttf_utils::convToWString(src),x,y,width, height, textAlign);
 }
+
+
 ofPath ofxTrueTypeFontUL2::getCharacterAsPoints(wstring src) {  
 	ul2_ttf_utils::ustring character=ul2_ttf_utils::convertTTFwstring(src);
 	return getStringAsPoints(src.substr(0,1))[0];
