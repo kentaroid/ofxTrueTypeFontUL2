@@ -72,10 +72,9 @@ typedef enum {
 	UL2_GET_SHAPES ,
 	UL2_GET_BOXES ,
 	UL2_GET_BOUNDINGBOX ,
-	UL2_GET_LINE_WIDTH
+	UL2_GET_LINE_WIDTH,
+	UL2_GET_LAYOUTS
 } ul2_rendering_types;
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Unicode wchar utils ,thanx by ofxTrueTypeFontUC
@@ -580,6 +579,8 @@ public:
 	void implUnloadFont();
     
 	vector <ofTTFCharacter> charOutlines;
+	
+
 	vector<ul2_char_layouts_info> cps;  // properties for each character
     
 	void drawChar(int c, float x, float y);
@@ -627,7 +628,6 @@ public:
 	bool bAlignByPixel;
 	bool bWordWrap;
 	bool bWritingHorizontal;
-    
     
 #ifdef TARGET_OPENGLES
 	GLint blend_src, blend_dst_;
@@ -968,11 +968,12 @@ vector<ul2_string_layouts_info> ofxTrueTypeFontUL2::Impl::getHbPosition(wstring 
 	return result;
 }
 
-
 template<class T1,class T2>inline void _push_back(T1 &t1,T2 t2){}
 template<class T>inline void _push_back(vector<T>&t1,T t2){t1.push_back(t2);}
 template<class T>inline void _setRect(T &t,float x,float y,float w,float h){}
 inline void _setRect(ofRectangle &t,float x,float y,float w,float h){t.x=x;t.y=y;t.width=w,t.height=h;}
+template<class T>inline void _push_layout(T&t,float x,float y,int i){}
+inline void _push_layout(vector<ofxFaceVec2> &t,float x,float y,int i){ofxFaceVec2 p;p.x=x;p.y=y;p.faceIndex=i; t.push_back(p);}
 
 template<class T>
 void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,float width,float height,ul2_text_align textAlign,vector<ofRectangle> *lineWidthList,ul2_rendering_types type ,T &result){
@@ -1080,6 +1081,8 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 				}else if(type==UL2_RRAW_SHAPE){
 					//Draw shapes.
 					drawCharAsShape(pos[index].cy,ax + X+pos[index].x_offset,ay+ Y+pos[index].y_offset);
+				}else if(type==UL2_GET_LAYOUTS){
+					_push_layout(result,ax+X+pos[index].x_offset,ay+Y+pos[index].y_offset,pos[index].cy);
 				}
 				//------------------------------------------------------------------------------------
 				//Update pen position. (regular direction)
@@ -1716,7 +1719,7 @@ void ofxTrueTypeFontUL2::drawString(string src, float x, float y,float width,flo
 }
 
 //-----------------------------------------------------------
-void ofxTrueTypeFontUL2::drawStringAsShapes(wstring src, float x, float y,float width,float height,int textAlign) {
+void ofxTrueTypeFontUL2::drawStringAsShapes(wstring s, float x, float y,float width,float height,int textAlign) {
 	if (!mImpl->bLoadedOk_) {
 		ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::drawStringAsShapes - Error : font not allocated -- line %d in %s", __LINE__,__FILE__);
 		return;
@@ -1726,10 +1729,25 @@ void ofxTrueTypeFontUL2::drawStringAsShapes(wstring src, float x, float y,float 
 		return;
 	}
 	bool result;
-	mImpl->commonLayouts(src,x,y,width, height, textAlign,UL2_RRAW_SHAPE,result);
+	mImpl->commonLayouts(s,x,y,width, height, textAlign,UL2_RRAW_SHAPE,result);
 }
 void ofxTrueTypeFontUL2::drawStringAsShapes(string s, float x, float y,float width,float height,int textAlign) {
 	return drawStringAsShapes(ul2_ttf_utils::convToWString(s), x, y,width, height, textAlign);
+}
+
+	//Ready for ofx3DFont
+void ofxTrueTypeFontUL2::getLayoutData(vector<ofxFaceVec2>&facePosis,wstring s, float x, float y,float width,float height,int textAlign){
+	if (!mImpl->bLoadedOk_) {
+		ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::getLayoutData - Error : font not allocated -- line %d in %s", __LINE__,__FILE__);
+		return;
+	}
+	mImpl->commonLayouts(s,x,y,width, height, textAlign,UL2_GET_LAYOUTS,facePosis);
+}
+void ofxTrueTypeFontUL2::getLayoutData(vector<ofxFaceVec2>&facePosis,string s, float x, float y,float width,float height,int textAlign){
+	getLayoutData(facePosis,ul2_ttf_utils::convToWString(s), x, y,width, height, textAlign);
+}
+ofPath ofxTrueTypeFontUL2::getCountours(int index){
+	return mImpl->charOutlines[index];
 }
 
 //==========================================================================================================================================

@@ -19,6 +19,11 @@ typedef enum {
 	UL2_TEXT_ALIGN_V_BOTTOM = 32
 } ul2_text_align;
 
+typedef struct {
+	float x;
+	float y;
+	int faceIndex;
+}ofxFaceVec2;
 
 class ofxTrueTypeFontUL2 {
 public:
@@ -55,7 +60,11 @@ public:
 	ofPath getCharacterAsPoints(wstring character);
 	ofPath getCharacterAsPoints(string character);
 	
-	
+	//Ready for ofx3DFont
+	void getLayoutData(vector<ofxFaceVec2>&facePosis,string s, float x, float y,float width=0,float height=0,int textAlign=UL2_TEXT_ALIGN_INVALID);
+	void getLayoutData(vector<ofxFaceVec2>&facePosis,wstring s, float x, float y,float width=0,float height=0,int textAlign=UL2_TEXT_ALIGN_INVALID);
+	ofPath getCountours(int index);
+
 	bool  isLoaded();
 	bool  isAntiAliased();
 	int	  getLoadedCharactersCount();
