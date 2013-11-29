@@ -90,12 +90,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\ofxTrueTypeFontUL2.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxTrueTypeFontUL2\src\ofxTrueTypeFontUL2.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\testApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\ofxTrueTypeFontUL2.h" />
+    <ClInclude Include="..\..\..\addons\ofxTrueTypeFontUL2\src\ofxTrueTypeFontUL2.h" />
     <ClInclude Include="src\testApp.h" />
   </ItemGroup>
   <ItemGroup>

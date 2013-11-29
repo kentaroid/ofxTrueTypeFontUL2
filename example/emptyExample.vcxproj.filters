@@ -7,7 +7,7 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ofxTrueTypeFontUL2.cpp">
+    <ClCompile Include="..\..\..\addons\ofxTrueTypeFontUL2\src\ofxTrueTypeFontUL2.cpp">
       <Filter>addons\ofxTrueTypeFontUL2\src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClInclude Include="src\testApp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ofxTrueTypeFontUL2.h">
+    <ClInclude Include="..\..\..\addons\ofxTrueTypeFontUL2\src\ofxTrueTypeFontUL2.h">
       <Filter>addons\ofxTrueTypeFontUL2\src</Filter>
     </ClInclude>
   </ItemGroup>
