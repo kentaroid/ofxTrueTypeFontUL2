@@ -244,6 +244,8 @@ static bool printVectorInfo = false;
 
 //--------------------------------------------------------
 static ofTTFCharacter makeContoursForCharacter(FT_Face &face);
+
+/*
 static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
     
     //int num			= face->glyph->outline.n_points;
@@ -309,7 +311,7 @@ static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
                         ofPoint nextPoint((float) vec[nextIndex].x,	-(float) vec[nextIndex].y);
                         
                         //cubic_bezier(testOutline, lastPoint.x, lastPoint.y, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, nextPoint.x, nextPoint.y, 8);
-                        charOutlines.bezierTo(controlPoint1.x/64, controlPoint1.y/64, controlPoint2.x/64, controlPoint2.y/64, nextPoint.x/64, nextPoint.y/64);
+                        charOutlines.bezierTo(controlPoint1.x/64.0f, controlPoint1.y/64.0f, controlPoint2.x/64.0f, controlPoint2.y/64.0f, nextPoint.x/64.0f, nextPoint.y/64.0f);
                     }
                     
                 }else{
@@ -327,7 +329,7 @@ static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
                         
                         if( prevIsConnic ){
                             ofPoint lastConnic((float)vec[endPos - 1].x, (float)-vec[endPos - 1].y);
-                            lastPoint = (conicPoint + lastConnic) / 2;
+                            lastPoint = (conicPoint + lastConnic) / 2.0f;
                             
                             if(printVectorInfo){
                                 ofLogNotice("ofTrueTypeFont") << "NEED TO MIX WITH LAST";
@@ -363,7 +365,7 @@ static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
                     }
                     
                     //quad_bezier(testOutline, lastPoint.x, lastPoint.y, conicPoint.x, conicPoint.y, nextPoint.x, nextPoint.y, 8);
-                    charOutlines.quadBezierTo(lastPoint.x/64, lastPoint.y/64, conicPoint.x/64, conicPoint.y/64, nextPoint.x/64, nextPoint.y/64);
+                    charOutlines.quadBezierTo(lastPoint.x/64.0f, lastPoint.y/64.0f, conicPoint.x/64.0f, conicPoint.y/64.0f, nextPoint.x/64.0f, nextPoint.y/64.0f);
                     
                     if( nextIsConnic ){
                         lastPoint = nextPoint;
@@ -378,6 +380,207 @@ static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
     
 	return charOutlines;
 }
+*/
+
+static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
+	bool vFlip=true;
+	double x1, y1, x2, y2, x3, y3,x4,y4;
+	const FT_Outline* outline= &face->glyph->outline;
+
+    ofTTFCharacter charOutlines;
+    charOutlines.setUseShapeColor(false);
+
+    FT_Vector   v_last;
+    FT_Vector   v_control;
+    FT_Vector   v_start;
+
+    FT_Vector*  point;
+    FT_Vector*  limit;
+    char*       tags;
+
+    FT_Error    error;
+
+    FT_Int   n;         /* index of contour in outline     */
+    FT_UInt  first;     /* index of first point in contour */
+    FT_Int   tag;       /* current point's state           */
+
+    if ( !outline )return charOutlines;
+
+    first = 0;
+
+	for (n = 0; n < outline->n_contours; n++) {
+		int  last;  // index of last point in contour
+
+		last  = outline->contours[n];
+		limit = outline->points + last;
+
+		v_start = outline->points[first];
+		v_last  = outline->points[last];
+
+		v_control = v_start;
+
+		point = outline->points + first;
+		tags  = outline->tags  + first;
+		tag   = FT_CURVE_TAG(tags[0]);
+
+		// A contour cannot start with a cubic control point!
+		if (tag == FT_CURVE_TAG_CUBIC)
+			return charOutlines;
+
+		// check first point to determine origin
+		if ( tag == FT_CURVE_TAG_CONIC) {
+			// first point is conic control.  Yes, this happens.
+			if (FT_CURVE_TAG(outline->tags[last]) == FT_CURVE_TAG_ON) {
+				// start at last point if it is on the curve
+				v_start = v_last;
+				limit--;
+			} else {
+				// if both first and last points are conic,
+				// start at their middle and record its position
+				// for closure
+				v_start.x = (v_start.x + v_last.x) / 2;
+				v_start.y = (v_start.y + v_last.y) / 2;
+
+				v_last = v_start;
+			}
+			point--;
+			tags--;
+		}
+		x1 = v_start.x/64.0f;
+		y1 = v_start.y/64.0f;
+		if (vFlip) y1 = -y1;
+		charOutlines.moveTo(x1,y1);
+		x4=x1;y4=y1;
+
+
+		while(point < limit) {
+			point++;
+			tags++;
+
+			tag = FT_CURVE_TAG(tags[0]);
+			switch(tag) {
+				case FT_CURVE_TAG_ON: { // emit a single line_to
+					x1 = point->x/64.0f;
+					y1 = point->y/64.0f;
+					if (vFlip) y1 = -y1;
+					charOutlines.lineTo(x1,y1);
+					x4=x1;y4=y1;
+
+					continue;
+				}
+
+				case FT_CURVE_TAG_CONIC: { // consume conic arcs
+					v_control.x = point->x;
+					v_control.y = point->y;
+
+				Do_Conic:
+					if (point < limit) {
+						FT_Vector vec;
+						FT_Vector v_middle;
+
+						point++;
+						tags++;
+						tag = FT_CURVE_TAG(tags[0]);
+
+						vec.x = point->x;
+						vec.y = point->y;
+
+						if (tag == FT_CURVE_TAG_ON) {
+							x1 = v_control.x/64.0f;
+							y1 = v_control.y/64.0f;
+							x2 = vec.x/64.0f;
+							y2 = vec.y/64.0f;
+							if (vFlip) { y1 = -y1; y2 = -y2; }
+							charOutlines.quadBezierTo(x4,y4,x1,y1,x2,y2);
+							x4=x2;y4=y2;
+							
+							continue;
+						}
+
+						if (tag != FT_CURVE_TAG_CONIC)return charOutlines;
+
+						v_middle.x = (v_control.x + vec.x) / 2.0f;
+						v_middle.y = (v_control.y + vec.y) / 2.0f;
+
+						x1 = v_control.x/64.0f;
+						y1 = v_control.y/64.0f;
+						x2 = v_middle.x/64.0f;
+						y2 = v_middle.y/64.0f;
+						if (vFlip) { y1 = -y1; y2 = -y2; }
+						charOutlines.quadBezierTo(x4,y4,x1,y1,x2,y2);
+						x4=x2;y4=y2;
+
+						v_control = vec;
+						goto Do_Conic;
+					}
+
+					x1 = v_control.x/64.0f;
+					y1 = v_control.y/64.0f;
+					x2 = v_start.x/64.0f;
+					y2 = v_start.y/64.0f;
+					if (vFlip) { y1 = -y1; y2 = -y2; }
+					charOutlines.quadBezierTo(x4,y4,x1,y1,x2,y2);
+					x4=x2;y4=y2;
+
+					goto Close;
+				}
+
+				default: { // FT_CURVE_TAG_CUBIC
+					FT_Vector vec1, vec2;
+
+					if (point + 1 > limit || FT_CURVE_TAG(tags[1]) != FT_CURVE_TAG_CUBIC)
+						return charOutlines;
+
+					vec1.x = point[0].x;
+					vec1.y = point[0].y;
+					vec2.x = point[1].x;
+					vec2.y = point[1].y;
+
+					point += 2;
+					tags  += 2;
+
+					if (point <= limit) {
+						FT_Vector vec;
+
+						vec.x = point->x;
+						vec.y = point->y;
+
+						x1 = vec1.x/64.0f;
+						y1 = vec1.y/64.0f;
+						x2 = vec2.x/64.0f;
+						y2 = vec2.y/64.0f;
+						x3 = vec.x/64.0f;
+						y3 = vec.y/64.0f;
+						if (vFlip) { y1 = -y1; y2 = -y2; y3 = -y3; }
+						charOutlines.bezierTo(x1,y1,x2,y2,x3,y3);
+						x4=x3;y4=y3;
+
+						continue;
+					}
+
+					x1 = vec1.x/64.0f;
+					y1 = vec1.y/64.0f;
+					x2 = vec2.x/64.0f;
+					y2 = vec2.y/64.0f;
+					x3 = v_start.x/64.0f;
+					y3 = v_start.y/64.0f;
+					if (vFlip) { y1 = -y1; y2 = -y2; y3 = -y3; }
+					charOutlines.bezierTo(x1,y1,x2,y2,x3,y3);
+					x4=x3;y4=y3;
+
+					goto Close;
+				}
+			}
+		}
+		charOutlines.close();
+
+Close:
+		first = last + 1;
+	}
+
+	return charOutlines;
+}
+
 
 
 #ifdef TARGET_OSX
@@ -1638,11 +1841,21 @@ void ofxTrueTypeFontUL2::setTextDirection(ul2_text_direction direction,ul2_text_
 //=====================================================================
 
 void  ofxTrueTypeFontUL2::setUseLayoutCache(bool useLayoutCache){
-	if(!useLayoutCache)mImpl->hbPositionCache.clear();
+	if(!useLayoutCache)clearCache();
 	mImpl->bUseLayoutCache=useLayoutCache;
 }
 bool  ofxTrueTypeFontUL2::getUseLayoutCache(){
 	return mImpl->bUseLayoutCache;
+}
+
+void ofxTrueTypeFontUL2::clearCache(bool all){
+	if(all){
+		mImpl->cps.clear();
+		mImpl->textures.clear();
+		mImpl->loadedChars.clear();
+		mImpl->charOutlines.clear();
+	}
+	mImpl->hbPositionCache.clear();
 }
 
 //-----------------------------------------------------------

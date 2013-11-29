@@ -85,6 +85,7 @@ public:
 	bool getWordWrap();
 	void setWordWrap(bool useWordwrap);
     
+
 	//Set opentype features.
 	void addOTFeature(const char*feature_tag,unsigned int value,unsigned int  start=0,unsigned int end=static_cast<unsigned>(-1));
 	void removeOTFeature(const char*feature_tag);
@@ -96,7 +97,8 @@ public:
 	//use caches (when drawing in fastloops)
 	void setUseLayoutCache(bool useLayoutCache);
 	bool getUseLayoutCache();
-    
+    void clearCache(bool all=false);
+
 	//alignment option.
 	void setAlignByPixel(bool alignByPixel);
 	bool getAlignByPixel();
