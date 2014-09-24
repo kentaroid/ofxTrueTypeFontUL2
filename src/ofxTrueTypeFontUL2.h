@@ -103,6 +103,9 @@ public:
 	void setAlignByPixel(bool alignByPixel);
 	bool getAlignByPixel();
     
+	//for drawStringAsShapes
+	void setStrokeWidth(float width);
+	float getStrokeWidth();
 	
     
 private:

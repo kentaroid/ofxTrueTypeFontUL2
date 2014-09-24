@@ -831,6 +831,7 @@ public:
 	bool bAlignByPixel;
 	bool bWordWrap;
 	bool bWritingHorizontal;
+	float strokeWidth;
     
 #ifdef TARGET_OPENGLES
 	GLint blend_src, blend_dst_;
@@ -1640,6 +1641,7 @@ void ofxTrueTypeFontUL2::Impl::drawCharAsShape(int c, float x, float y) {
 	}
 	ofPath & charRef = charOutlines[c];
 	charRef.setFilled(ofGetStyle().bFill);
+	if(strokeWidth>0.0)charRef.setStrokeWidth(strokeWidth);
 	charRef.draw(x,y);
 }
 
@@ -1793,6 +1795,14 @@ void ofxTrueTypeFontUL2::setAlignByPixel(bool alignByPixel){
 bool ofxTrueTypeFontUL2::getAlignByPixel(){
 	return mImpl->bAlignByPixel;
 }
+
+void  ofxTrueTypeFontUL2::setStrokeWidth(float width){
+	mImpl->strokeWidth=width;
+}
+float  ofxTrueTypeFontUL2::getStrokeWidth(){
+	return mImpl->strokeWidth;
+}
+
 
 //shrt cut feature
 

@@ -55,6 +55,8 @@ void testApp::setup(){
     align=UL2_TEXT_ALIGN_INVALID;
     strAlign="No Alignment [0]";
     strDirection="Left to Right (TTB)";
+
+	face.setStrokeWidth(1.0f);
 }
 
 //--------------------------------------------------------------
