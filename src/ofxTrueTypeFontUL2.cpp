@@ -1436,7 +1436,7 @@ void ofxTrueTypeFontUL2::Impl::loadChar(const int & charID) {
 	
 	//------------------------------------------ anti aliased or not:
 	FT_Error err = FT_Load_Glyph( set.face, loadedChars[i].codepoint,FT_LOAD_DEFAULT);
-	if(err)ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::loadFont - Error with FT_Load_Glyph %i: FT_Error = %d", loadedChars[i] , err);
+	if(err)ofLog(OF_LOG_ERROR,"ofxTrueTypeFontUL2::loadFont - Error with FT_Load_Glyph %i: FT_Error = %d", loadedChars[i].codepoint , err);
     
     
 	float width,height,topExtent,leftextent,vx,vy;

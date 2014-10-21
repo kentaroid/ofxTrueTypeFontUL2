@@ -75,13 +75,13 @@ void testApp::draw(){
 	
 	//base line
 	ofSetColor(255,127,255,255);
-	ofLine(0,y,ofGetWidth(),y);
-	ofLine(x,0,x,ofGetHeight());
+	ofDrawLine(0,y,ofGetWidth(),y);
+	ofDrawLine(x,0,x,ofGetHeight());
 	
 	//cursor
 	ofSetColor(127,127,255,255);
-	ofLine(mouseX,0,mouseX,ofGetHeight());
-	ofLine(0,mouseY,ofGetWidth(),mouseY);
+	ofDrawLine(mouseX,0,mouseX,ofGetHeight());
+	ofDrawLine(0,mouseY,ofGetWidth(),mouseY);
     
 	//draw
 	if(bitmapRendering){
@@ -90,11 +90,11 @@ void testApp::draw(){
 	}else{
 		ofSetColor(127,255,127,255);
 		vector<ofRectangle> r = face.getStringBoxes(show,x,y,w,h,align);
-		for(int i=0;i<r.size();i++)ofRect(r[i]);
+		for(int i=0;i<r.size();i++)ofDrawRectangle(r[i]);
 		ofSetColor(255,127,127,255);
 		face.drawStringAsShapes(show,x,y,w,h,align);
 		ofSetColor(255,127,255,255);
-		ofRect(face.getStringBoundingBox(show,x,y,w,h,align));
+		ofDrawRectangle(face.getStringBoundingBox(show,x,y,w,h,align));
 	}
     
     ofSetColor(0,0,0,255);

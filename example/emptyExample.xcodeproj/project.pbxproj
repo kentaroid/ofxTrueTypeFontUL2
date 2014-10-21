@@ -480,7 +480,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
-					"/Volumes/PROJECTS/Dropbox/project\\ files/openframeworks/addons/ofxTrueTypeFontUL2/libs/harfbuzz/lib/osx",
+					"../../../addons/ofxTrueTypeFontUL2/libs/harfbuzz/lib/osx",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)Debug";
 				WRAPPER_EXTENSION = app;
@@ -566,7 +566,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_49)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
-					"/Volumes/PROJECTS/Dropbox/project\\ files/openframeworks/addons/ofxTrueTypeFontUL2/libs/harfbuzz/lib/osx",
+					"../../../addons/ofxTrueTypeFontUL2/libs/harfbuzz/lib/osx",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
