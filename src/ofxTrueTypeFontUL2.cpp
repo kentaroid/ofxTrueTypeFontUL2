@@ -2,10 +2,6 @@
 //--------------------------
 
 #include "ft2build.h"
-#include "freetype2/freetype/freetype.h"
-#include "freetype2/freetype/ftglyph.h"
-#include "freetype2/freetype/ftoutln.h"
-#include "freetype2/freetype/fttrigon.h"
 
 #include <hb-ft.h>
 #include <hb-ot.h>
