@@ -1,4 +1,4 @@
-﻿#include "ofxTrueTypeFontUL2.h"
+#include "ofxTrueTypeFontUL2.h"
 //--------------------------
 
 #include "ft2build.h"
@@ -830,9 +830,9 @@ public:
 	float strokeWidth;
     
 #ifdef TARGET_OPENGLES
-	GLint blend_src, blend_dst_;
-	GLboolean blend_enabled_;
-	GLboolean texture_2d_enabled_;
+	GLint blend_src, blend_dst;
+	GLboolean blend_enabled;
+	GLboolean texture_2d_enabled;
 #endif
 };
 
@@ -1197,7 +1197,7 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 	float X = 0;
 	float Y = 0;
 	unsigned int _index = 0;
-	float _X = 0;
+	float __X = 0;
 	float _Y = 0;
 	float minx = 0;
 	float miny = 0;
@@ -1296,26 +1296,26 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 			//Calculate a line-break position.
 			if(boxWidth>0){
 				if(!bWordWrap||pos[index].breakable){
-					_index=index+1;_X=X;_Y=Y;
+					_index=index+1;__X=X;_Y=Y;
 					while(_index<len){
 						if(pos[_index].character== L'\n')break;
-						_X += m_direction==HB_DIRECTION_RTL ? - pos[_index].x_advance : 0 ;
+						__X += m_direction==HB_DIRECTION_RTL ? - pos[_index].x_advance : 0 ;
 						_Y += m_direction==HB_DIRECTION_BTT ? - pos[_index].y_advance : 0 ;
-						if((m_direction==HB_DIRECTION_LTR && (_X + pos[_index].x1+pos[_index].x_offset>boxWidth))||
-                           (m_direction==HB_DIRECTION_RTL && (_X + pos[_index].x2+pos[_index].x_offset<-boxWidth))||
+						if((m_direction==HB_DIRECTION_LTR && (__X + pos[_index].x1+pos[_index].x_offset>boxWidth))||
+                           (m_direction==HB_DIRECTION_RTL && (__X + pos[_index].x2+pos[_index].x_offset<-boxWidth))||
                            (m_direction==HB_DIRECTION_TTB && (_Y + pos[_index].y1+pos[_index].y_offset>boxWidth))||
                            (m_direction==HB_DIRECTION_BTT && (_Y + pos[_index].y2+pos[_index].y_offset<-boxWidth))){
 							lineBreak=true;
 							break;
 						}else if(!bWordWrap||pos[_index].breakable)break;
 						if (!pos[_index].hasFace) {
-							_X += pos[_index].x_advance * h_space ;
+							__X += pos[_index].x_advance * h_space ;
 							_Y += pos[_index].y_advance * v_space ;
 						}else {
-							_X += m_direction==HB_DIRECTION_RTL ? 0 : pos[_index].x_advance ;
+							__X += m_direction==HB_DIRECTION_RTL ? 0 : pos[_index].x_advance ;
 							_Y += m_direction==HB_DIRECTION_BTT ? 0 : pos[_index].y_advance ;
 						}
-						_X += h_letterSpace;
+						__X += h_letterSpace;
 						_Y += v_letterSpace;
 						_index++;
 					}
@@ -1526,15 +1526,29 @@ void ofxTrueTypeFontUL2::Impl::loadChar(const int & charID) {
 		cps[i].t1 = float(width + border_) / float(w);
 		cps[i].v1 = float(height + border_) / float(h);
 		expandedData.pasteInto(atlasPixels, border_, border_);
+		
+		int glFormat[] = {GL_LUMINANCE_ALPHA,GL_LUMINANCE_ALPHA};
+		bool swizzle = false;
+		
+		#ifndef TARGET_OPENGLES
+			glFormat[0] = GL_RG16;
+			glFormat[1] = GL_RG;
+			swizzle = true;
+		#endif
         
-		textures[i].allocate(atlasPixels.getWidth(), atlasPixels.getHeight(), GL_LUMINANCE_ALPHA, false);
+		textures[i].allocate(atlasPixels.getWidth(), atlasPixels.getHeight(), glFormat[0], false);
         
+		if (swizzle) {
+			textures[i].setRGToRGBASwizzles( true );
+		}
+		
 		if (bAntiAliased_ && set.fontsize>20) {
 			textures[i].setTextureMinMagFilter(GL_LINEAR,GL_LINEAR);
 		}else {
 			textures[i].setTextureMinMagFilter(GL_NEAREST,GL_NEAREST);
 		}
-		textures[i].loadData(atlasPixels.getPixels(), atlasPixels.getWidth(), atlasPixels.getHeight(), GL_LUMINANCE_ALPHA);
+		
+		textures[i].loadData(atlasPixels.getPixels(), atlasPixels.getWidth(), atlasPixels.getHeight(), glFormat[1]);
 	}
 }
 
@@ -2006,3 +2020,4 @@ void ofxTrueTypeFontUL2::finishLibraries(){
 		FT_Done_FreeType(library);
 	}
 }
+
