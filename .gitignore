@@ -237,3 +237,19 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
+
+# vs
+*.sln
+*.vcxproj
+*.vcxproj.filters
+icon.rc
+config.make
+Makefile
+*.vsidx
+*.lock
+*.VC.db
+*.VC.db-shm
+*.VC.db-wal
+*.VC.opendb
+*fileList.bin
+v17/

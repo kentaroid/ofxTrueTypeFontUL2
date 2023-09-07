@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "ofTrueTypeFont.h"
 
+using namespace std;
+
 typedef enum {
 	UL2_TEXT_DIRECTION_INVALID = 0 ,
 	UL2_TEXT_DIRECTION_LTR = 1 ,
