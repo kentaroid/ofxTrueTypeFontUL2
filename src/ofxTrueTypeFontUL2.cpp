@@ -239,10 +239,10 @@ static FT_Library library;
 static bool printVectorInfo = false;
 
 //--------------------------------------------------------
-static ofTTFCharacter makeContoursForCharacter(FT_Face &face);
+static ofPath makeContoursForCharacter(FT_Face &face);
 
 /*
-static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
+static ofPath makeContoursForCharacter(FT_Face &face){
     
     //int num			= face->glyph->outline.n_points;
     int nContours	= face->glyph->outline.n_contours;
@@ -251,7 +251,7 @@ static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
     char * tags		= face->glyph->outline.tags;
     FT_Vector * vec = face->glyph->outline.points;
     
-    ofTTFCharacter charOutlines;
+    ofPath charOutlines;
     charOutlines.setUseShapeColor(false);
     
     for(int k = 0; k < nContours; k++){
@@ -378,12 +378,12 @@ static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
 }
 */
 
-static ofTTFCharacter makeContoursForCharacter(FT_Face &face){
+static ofPath makeContoursForCharacter(FT_Face &face){
 	bool vFlip=true;
 	double x1, y1, x2, y2, x3, y3,x4,y4;
 	const FT_Outline* outline= &face->glyph->outline;
 
-    ofTTFCharacter charOutlines;
+    ofPath charOutlines;
     charOutlines.setUseShapeColor(false);
 
     FT_Vector   v_last;
@@ -777,7 +777,7 @@ public:
     
 	void implUnloadFont();
     
-	vector <ofTTFCharacter> charOutlines;
+	vector <ofPath> charOutlines;
 	
 
 	vector<ul2_char_layouts_info> cps;  // properties for each character
@@ -1272,7 +1272,7 @@ void ofxTrueTypeFontUL2::Impl::commonLayouts2(wstring src ,float x, float y,floa
 				}else if(type==UL2_GET_SHAPES){
 					//Get shapes.
 					ofPath path=charOutlines[pos[index].cy];
-					path.translate(ofPoint(ax+X+pos[index].x_offset,ay+Y+pos[index].y_offset));
+					path.translate(ofVec3f(ax+X+pos[index].x_offset,ay+Y+pos[index].y_offset));
 					if (simplifyAmt_>0)path.simplify(simplifyAmt_);
 					_push_back(result,path);
 				}else if(type==UL2_DRAW_TEXTURE){
